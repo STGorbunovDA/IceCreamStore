@@ -2,6 +2,7 @@
 <Shell x:Class="IceCreamStore.MAUI.AppShell"
        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
        xmlns:local="clr-namespace:IceCreamStore.MAUI"
        xmlns:pages="clr-namespace:IceCreamStore.MAUI.Pages"
        Shell.FlyoutBehavior="Flyout"
@@ -12,6 +13,11 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />-->
 
+    <Shell.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#30d5c8" 
+                                   StatusBarStyle="LightContent" />
+    </Shell.Behaviors>
+    
     <ShellContent ContentTemplate="{DataTemplate pages:OnboardingPage}"
                   Shell.FlyoutBehavior="Flyout" 
                   Shell.FlyoutItemIsVisible="False"/>
@@ -31,6 +37,10 @@
                       Route="ProfilePage" />
     </TabBar>
 
+    <MenuItem Text="Signout"
+              IconImageSource="logout"
+              Clicked="SignoutMenuItem_Clicked"/>
+
     <Shell.ItemTemplate>
         <DataTemplate>
             <VerticalStackLayout>
@@ -43,7 +53,11 @@
                            Grid.Column="0"
                            HeightRequest="24"
                            Source="{Binding FlyoutIcon}"
-                           WidthRequest="24" />
+                           WidthRequest="24">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="#30d5c8" />
+                        </Image.Behaviors>
+                    </Image>
                     <Label Grid.Row="0"
                            Grid.Column="1"
                            Text="{Binding Title}"
@@ -52,7 +66,11 @@
                     <Image Grid.Row="0"
                            Grid.Column="2"
                            Source="right_arrow"
-                           WidthRequest="24"/>
+                           WidthRequest="24">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior TintColor="#30d5c8" />
+                        </Image.Behaviors>
+                    </Image>
                     <BoxView Grid.Row="1"
                              Grid.ColumnSpan="3"
                              HeightRequest="1"
@@ -62,6 +80,30 @@
         </DataTemplate>
     </Shell.ItemTemplate>
 
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <Grid ColumnDefinitions="Auto, *, Auto"
+                  Padding="10"
+                  ColumnSpacing="15"
+                  RowSpacing="5">
+                <Image Grid.Row="0"
+                       Grid.Column="0"
+                       HeightRequest="24"
+                       Source="{Binding Icon}"
+                       WidthRequest="24">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="#30d5c8" />
+                    </Image.Behaviors>
+                </Image>
+                <Label Grid.Row="0"
+                       Grid.Column="1"
+                       Text="{Binding Text}"
+                       TextColor="#30d5c8"
+                       FontSize="16" />
+            </Grid>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+    
     <Shell.FlyoutHeader>
         <Border BackgroundColor="#30d5c8"
                 Padding="10"
@@ -80,4 +122,19 @@
             </VerticalStackLayout>
         </Border>
     </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <Border BackgroundColor="#30d5c8"
+                StrokeThickness="0"
+                Padding="10">
+            <Label Text="Developed by Dmitriy Gorbunov" 
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   FontSize="15"
+                   FontAttributes="Bold"/>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="FlyoutFooter_Tapped" />
+            </Border.GestureRecognizers>
+        </Border>
+    </Shell.FlyoutFooter>
 </Shell>

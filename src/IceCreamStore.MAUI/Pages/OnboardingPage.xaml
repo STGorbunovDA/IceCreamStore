@@ -2,22 +2,44 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="IceCreamStore.MAUI.Pages.OnboardingPage"
-             Title="OnboardingPage">
-    <VerticalStackLayout Spacing="25">
-        <Label Text="Welcome to .NET MAUI!"
-               VerticalOptions="Center"
-               HorizontalOptions="Center" />
-        <Button Text="Get to app"
-                Clicked="Button_Clicked"
-                VerticalOptions="Center"
-                HorizontalOptions="Center" />
-        <Button Text="Войти"
-                Clicked="Signin_Clicked"
-                VerticalOptions="Center"
-                HorizontalOptions="Center" />
-        <Button Text="Регистрация"
-                Clicked="Signup_Clicked"
-                VerticalOptions="Center"
-                HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="*, Auto"
+          Padding="0, 0, 0, 40">
+        <VerticalStackLayout Grid.Row="0"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+            <Image Source="ice_cream"
+                   HeightRequest="250"
+                   WidthRequest="250"
+                   Aspect="AspectFill" />
+            <Label Text="Welcome"
+                   FontSize="20"
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold"
+                   TextColor="#30d5c8" />
+            <Label Text="MAUI ICE CREAME STORE"
+                   VerticalOptions="Center"
+                   FontSize="25"
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold"
+                   TextColor="#30d5c8" />
+            <Label Text="Home of Delicious Creams"
+                   VerticalOptions="Center"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   FontAttributes="Italic"
+                   TextColor="#30d5c8" />
+
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="1"
+                             HorizontalOptions="Center"
+                             Spacing="20">
+            <Button Text="Signup"
+                    Clicked="Signup_Clicked" />
+            <Button Text="Signin"
+                    Clicked="Signin_Clicked" />
+
+
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
