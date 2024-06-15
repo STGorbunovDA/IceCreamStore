@@ -1,4 +1,6 @@
 using IceCreamStore.API.Data;
+using IceCreamStore.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 // Add-Migration Initial -o Data/Migrations
@@ -11,6 +13,18 @@ builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("Icecream");
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddTransient<TokenService>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(jwtOptions =>
+        jwtOptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(builder.Configuration));
+
+builder.Services.AddAuthentication();
 
 var app = builder.Build();
 
@@ -25,6 +39,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 var summaries = new[]
 {
