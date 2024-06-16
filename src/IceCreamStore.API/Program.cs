@@ -14,7 +14,8 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("Icecream");
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddTransient<TokenService>();
+builder.Services.AddTransient<TokenService>()
+                .AddTransient<PasswordService>();
 
 builder.Services.AddAuthentication(options =>
 {
