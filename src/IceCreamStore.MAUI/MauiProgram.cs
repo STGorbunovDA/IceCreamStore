@@ -20,8 +20,13 @@ namespace IceCreamStore.MAUI
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
+            ConfigureRefit(builder.Services);
             return builder.Build();
+        }
+
+        private static void ConfigureRefit(IServiceCollection services)
+        {
+            throw new NotImplementedException();
         }
     }
 }

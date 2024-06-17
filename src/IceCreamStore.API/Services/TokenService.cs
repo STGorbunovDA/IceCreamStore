@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using IceCreamStore.Shared.Dtos;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -27,7 +28,7 @@ namespace IceCreamStore.API.Services
             return securityKey;
         }
 
-        public string GeneratedToken(Guid userId, string userName, string email, string address)
+        public string GeneratedToken(LoggedInUser loggedInUser)
         {
             var securityKey = GetSecurityKey(configuration);
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -36,10 +37,10 @@ namespace IceCreamStore.API.Services
             var expireInMinutes = Convert.ToInt32(_configuration["Jwt:ExpireInMinute"]);
 
             Claim[] claims = [
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                new Claim(ClaimTypes.Name, userName),
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.StreetAddress, address),
+                new Claim(ClaimTypes.NameIdentifier, loggedInUser.id.ToString()),
+                new Claim(ClaimTypes.Name, loggedInUser.Name),
+                new Claim(ClaimTypes.Email, loggedInUser.Email),
+                new Claim(ClaimTypes.StreetAddress, loggedInUser.Address),
             ];
 
             var token = new JwtSecurityToken(

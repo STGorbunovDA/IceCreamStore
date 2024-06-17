@@ -1,4 +1,5 @@
 using IceCreamStore.API.Data;
+using IceCreamStore.API.Endpoints;
 using IceCreamStore.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,8 @@ var connectionString = builder.Configuration.GetConnectionString("Icecream");
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddTransient<TokenService>()
-                .AddTransient<PasswordService>();
+                .AddTransient<PasswordService>()
+                .AddTransient<AuthService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -25,7 +27,7 @@ builder.Services.AddAuthentication(options =>
     .AddJwtBearer(jwtOptions =>
         jwtOptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(builder.Configuration));
 
-builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -44,25 +46,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.MapEndpoints();
 
 app.Run();
 
@@ -72,9 +56,4 @@ static void MigrateDatabase(IServiceProvider serviceProvider)
     var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
     if(dataContext.Database.GetPendingMigrations().Any())
         dataContext.Database.Migrate();
-}
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
