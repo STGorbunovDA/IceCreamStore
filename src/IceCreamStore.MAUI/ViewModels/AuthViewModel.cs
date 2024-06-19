@@ -1,29 +1,33 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IceCreamStore.MAUI.Pages;
+using IceCreamStore.MAUI.Services;
 using IceCreamStore.Shared.Dtos;
 
 namespace IceCreamStore.MAUI.ViewModels
 {
-    public partial class AuthViewModel : BaseViewModel
+    public partial class AuthViewModel(IAuthApi authApi) : BaseViewModel
     {
+        private readonly IAuthApi _authApi;
 
-        [ObservableProperty]
+
+        [ObservableProperty, NotifyPropertyChangedFor(nameof(CanSignup))]
         private string? _name;
 
-        [ObservableProperty]
+        [ObservableProperty, NotifyPropertyChangedFor(nameof(CanSignin)), NotifyPropertyChangedFor(nameof(CanSignup))]
         private string? _email;
 
-        [ObservableProperty]
+        [ObservableProperty, NotifyPropertyChangedFor(nameof(CanSignin)), NotifyPropertyChangedFor(nameof(CanSignup))]
         private string? _password;
 
-        [ObservableProperty]
+        [ObservableProperty, NotifyPropertyChangedFor(nameof(CanSignup))]
         private string? _address;
 
         public bool CanSignin => !string.IsNullOrEmpty(Email)
                                     && !string.IsNullOrEmpty(Password);
 
         public bool CanSignup => CanSignin
-                                    && !string.IsNullOrEmpty(Password)
+                                    && !string.IsNullOrEmpty(Name)
                                     && !string.IsNullOrEmpty(Address);
 
         [RelayCommand]
@@ -35,12 +39,56 @@ namespace IceCreamStore.MAUI.ViewModels
             {
                 var signupDto = new SignupRequestDto (Name, Email, Password, Address);
 
-                // Make Api Call
-            }
-            catch (Exception)
-            {
+                var result = await _authApi.SignupAsync(signupDto);
 
-                throw;
+                if(result.IsSuccess)
+                {
+                    await ShowAlertAsync(result.Data.Token);
+                    // Navigate to HomePage
+                    await GoToAsync($"//{nameof(HomePage)}", animate: true);
+                }
+                else
+                {
+                    // Display Error Alert
+                    await ShowErrorAlertAsync(result.ErrorMessage ?? "Unnow error in signing up");
+                }
+            }
+            catch (Exception ex)
+            {
+                await ShowErrorAlertAsync(ex.Message);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        [RelayCommand]
+        private async Task SigninAsync()
+        {
+            IsBusy = true;
+
+            try
+            {
+                var signinDto = new SigninRequestDto(Email, Password);
+
+                var result = await _authApi.SigninAsync(signinDto);
+
+                if (result.IsSuccess)
+                {
+                    await ShowAlertAsync(result.Data.User.Email);
+                    // Navigate to HomePage
+                    await GoToAsync($"//{nameof(HomePage)}", animate: true);
+                }
+                else
+                {
+                    // Display Error Alert
+                    await ShowErrorAlertAsync(result.ErrorMessage ?? "Unnow error in signing up");
+                }
+            }
+            catch (Exception ex)
+            {
+                await ShowErrorAlertAsync(ex.Message);
             }
             finally
             {
