@@ -8,7 +8,7 @@ namespace IceCreamStore.MAUI.ViewModels
 {
     public partial class AuthViewModel(IAuthApi authApi) : BaseViewModel
     {
-        private readonly IAuthApi _authApi;
+        private readonly IAuthApi _authApi = authApi;
 
 
         [ObservableProperty, NotifyPropertyChangedFor(nameof(CanSignup))]

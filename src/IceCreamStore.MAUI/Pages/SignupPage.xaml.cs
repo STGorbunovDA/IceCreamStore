@@ -9,4 +9,9 @@ public partial class SignupPage : ContentPage
 		InitializeComponent();
 		BindingContext = authViewModel;
 	}
+
+    private async void SigninLabel_Tapped(object sender, TappedEventArgs e)
+    {
+		await Shell.Current.GoToAsync(nameof(SigninPage));
+    }
 }

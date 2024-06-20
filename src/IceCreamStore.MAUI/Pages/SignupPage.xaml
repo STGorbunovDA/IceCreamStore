@@ -1,13 +1,55 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IceCreamStore.MAUI.ViewModels"
              x:Class="IceCreamStore.MAUI.Pages.SignupPage"
              Title="Signup"
-             Shell.FlyoutBehavior="Disabled">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Shell.FlyoutBehavior="Disabled"
+             x:DataType="vm:AuthViewModel">
+    
+    <Grid>
+        <VerticalStackLayout VerticalOptions="Center"
+                             Padding="20"
+                             Spacing="20">
+            <Image Source="ice_cream"
+                   HeightRequest="150"
+                   WidthRequest="150"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center" />
+
+            <Entry Text="{Binding Name}"
+                   Placeholder="Name" />
+            
+            <Entry Text="{Binding Email}"
+                   Placeholder="Email"
+                   Keyboard="Email"/>
+            
+            <Entry Text="{Binding Password}"
+                   Placeholder="Password"
+                   IsPassword="True" />
+
+            <Editor Text="{Binding Address}"
+                    Placeholder="Address" 
+                    MaxLength="150"
+                    AutoSize="TextChanges" />
+
+            <Label Text="Existing user? Sigin"
+                   FontSize="15"
+                   FontAttributes="Bold"
+                   TextColor="#30d5c8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SigninLabel_Tapped" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <Button Text="Signup" 
+                    IsEnabled="{Binding CanSignup}"
+                    Command="{Binding SignupCommand}"/>
+
+        </VerticalStackLayout>
+        <ActivityIndicator HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Color="#30d5c8"
+                           IsRunning="{Binding IsBusy}" />
+    </Grid>
 </ContentPage>
