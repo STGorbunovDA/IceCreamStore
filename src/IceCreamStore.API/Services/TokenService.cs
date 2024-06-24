@@ -37,7 +37,7 @@ namespace IceCreamStore.API.Services
             var expireInMinutes = Convert.ToInt32(_configuration["Jwt:ExpireInMinute"]);
 
             Claim[] claims = [
-                new Claim(ClaimTypes.NameIdentifier, loggedInUser.id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, loggedInUser.Id.ToString()),
                 new Claim(ClaimTypes.Name, loggedInUser.Name),
                 new Claim(ClaimTypes.Email, loggedInUser.Email),
                 new Claim(ClaimTypes.StreetAddress, loggedInUser.Address),

@@ -1,4 +1,4 @@
 ﻿namespace IceCreamStore.Shared.Dtos
 {
-    public record LoggedInUser(Guid id, string Name, string Email, string Address);
+    public record LoggedInUser(Guid Id, string Name, string Email, string Address);
 }

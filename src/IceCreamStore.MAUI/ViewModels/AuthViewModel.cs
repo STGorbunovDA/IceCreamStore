@@ -6,10 +6,10 @@ using IceCreamStore.Shared.Dtos;
 
 namespace IceCreamStore.MAUI.ViewModels
 {
-    public partial class AuthViewModel(IAuthApi authApi) : BaseViewModel
+    public partial class AuthViewModel(IAuthApi authApi, AuthService authService) : BaseViewModel
     {
         private readonly IAuthApi _authApi = authApi;
-
+        private readonly AuthService _authService = authService;
 
         [ObservableProperty, NotifyPropertyChangedFor(nameof(CanSignup))]
         private string? _name;
@@ -43,7 +43,8 @@ namespace IceCreamStore.MAUI.ViewModels
 
                 if(result.IsSuccess)
                 {
-                    await ShowAlertAsync(result.Data.Token);
+                    _authService.Signin(result.Data);
+                    // await ShowAlertAsync(result.Data.Token);
                     // Navigate to HomePage
                     await GoToAsync($"//{nameof(HomePage)}", animate: true);
                 }
@@ -76,7 +77,9 @@ namespace IceCreamStore.MAUI.ViewModels
 
                 if (result.IsSuccess)
                 {
-                    await ShowAlertAsync(result.Data.User.Email);
+                    _authService.Signin(result.Data);
+
+                    //await ShowAlertAsync(result.Data.User.Email);
                     // Navigate to HomePage
                     await GoToAsync($"//{nameof(HomePage)}", animate: true);
                 }
