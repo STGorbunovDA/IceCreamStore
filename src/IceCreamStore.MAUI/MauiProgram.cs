@@ -37,6 +37,8 @@ namespace IceCreamStore.MAUI
 
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddTransient<OnboardingPage>();
+            builder.Services.AddSingleton<HomeViewModel>()
+                            .AddSingleton<HomePage>();
 
             ConfigureRefit(builder.Services);
 
@@ -73,13 +75,23 @@ namespace IceCreamStore.MAUI
             };
 
             services.AddRefitClient<IAuthApi>(refitSetting)
-                .ConfigureHttpClient(HttpClient =>
-                {
-                    var baseUrl = DeviceInfo.Platform == DevicePlatform.Android ? "https://10.0.2.2:7240"
-                                                                                : "https://localhost:7240";
+                .ConfigureHttpClient(SetHttpClient);
 
-                    HttpClient.BaseAddress = new Uri(baseUrl);
-                });
+            services.AddRefitClient<IIcecreamsApi>(refitSetting)
+                .ConfigureHttpClient(SetHttpClient);
+
+
+            static void SetHttpClient(HttpClient httpClient)
+            {
+                var baseUrl = DeviceInfo.Platform == DevicePlatform.Android ? "https://10.0.2.2:7240"
+                                                                            : "https://localhost:7240";
+                if(DeviceInfo.DeviceType == DeviceType.Physical)
+                {
+                    baseUrl = "https://rx9cw2m7-7240.euw.devtunnels.ms/";
+                }
+
+                httpClient.BaseAddress = new Uri(baseUrl);
+            }
         }
     }
 }

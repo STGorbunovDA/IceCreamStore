@@ -39,10 +39,7 @@
                     Command="{Binding SigninCommand}" />
 
         </VerticalStackLayout>
-        <ActivityIndicator HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           Color="#30d5c8"
-                           IsRunning="{Binding IsBusy}" />
+        <ActivityIndicator IsRunning="{Binding IsBusy}" />
     </Grid>
     
 </ContentPage>

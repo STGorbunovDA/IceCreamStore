@@ -39,6 +39,11 @@
                 <Setter Property="PlaceholderColor"
                         Value="Aquamarine" />
             </Style>
+            <Style TargetType="ActivityIndicator">
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="Color" Value="#30d5c8"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
