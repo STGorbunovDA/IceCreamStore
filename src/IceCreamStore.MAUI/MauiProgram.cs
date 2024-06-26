@@ -40,6 +40,9 @@ namespace IceCreamStore.MAUI
             builder.Services.AddSingleton<HomeViewModel>()
                             .AddSingleton<HomePage>();
 
+            builder.Services.AddTransient<DetailsViewModel>()
+                            .AddTransient<DetailsPage>();
+
             ConfigureRefit(builder.Services);
 
             return builder.Build();
@@ -87,7 +90,7 @@ namespace IceCreamStore.MAUI
                                                                             : "https://localhost:7240";
                 if(DeviceInfo.DeviceType == DeviceType.Physical)
                 {
-                    baseUrl = "https://rx9cw2m7-7240.euw.devtunnels.ms/";
+                    baseUrl = "https://hx1dv2gm-7240.euw.devtunnels.ms";
                 }
 
                 httpClient.BaseAddress = new Uri(baseUrl);

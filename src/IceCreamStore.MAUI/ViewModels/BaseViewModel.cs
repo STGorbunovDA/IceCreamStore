@@ -10,6 +10,9 @@ namespace IceCreamStore.MAUI.ViewModels
         protected async Task GoToAsync(string url, bool animate = false) =>
             await Shell.Current.GoToAsync(url, animate);
 
+        protected async Task GoToAsync(string url, bool animate, IDictionary<string, object> parameters) =>
+            await Shell.Current.GoToAsync(url, animate, parameters);
+
         protected async Task ShowErrorAlertAsync(string errorMessage) =>
             await Shell.Current.DisplayAlert("Error", errorMessage, "Ok");
 
