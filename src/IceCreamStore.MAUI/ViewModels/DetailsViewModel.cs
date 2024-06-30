@@ -16,7 +16,7 @@ namespace IceCreamStore.MAUI.ViewModels
         private int _quantity;
 
         [ObservableProperty]
-        private IcecreamOption[] _option = [];
+        private IcecreamOption[] _options = [];
 
         [RelayCommand]
         private void IncreaseQuantity() => Quantity++;
@@ -28,5 +28,28 @@ namespace IceCreamStore.MAUI.ViewModels
         }
         [RelayCommand]
         private async Task GoBackAsync() => await GoToAsync("..", animate: true);
+
+        partial void OnIcecreamChanged(IcecreamDto? value)
+        {
+            Options = [];
+            if (value is null)
+                return;
+
+            Options = value.Options.Select(o => new IcecreamOption
+            {
+                Flavor = o.Flavor,
+                Topping = o.Topping,
+                IsSelected = false
+            }).ToArray();
+        }
+
+        [RelayCommand]
+        private void Selectoption(IcecreamOption newOption)
+        {
+            var newIsSelected = !newOption.IsSelected;
+            // Deselect all options
+            Options = [..Options.Select(o => { o.IsSelected =  false; return o; })];
+            newOption.IsSelected = newIsSelected;
+        }
     }
 }
