@@ -8,6 +8,9 @@ namespace IceCreamStore.MAUI.ViewModels
     {
         public ObservableCollection<CartItem> CartItems { get; set; } = [];
 
+        public static int TotalCartCount { get; set; }
+        public static event EventHandler<int>? TotalCartCountChanged;
+
         public async void AddItemToCart(IcecreamDto icecream, int quantity, string flavor, string topping)
         {
             var existingItem = CartItems.FirstOrDefault(ci => ci.IcecreamId == icecream.Id);
@@ -39,6 +42,9 @@ namespace IceCreamStore.MAUI.ViewModels
                 CartItems.Add(cartItem);
                 await ShowToastAsync("Icecream added to cart");
             }
+
+            TotalCartCount = CartItems.Sum(i => i.Quantity);
+            TotalCartCountChanged?.Invoke(null, TotalCartCount);
         }
     }
 }

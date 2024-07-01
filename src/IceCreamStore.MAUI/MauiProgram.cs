@@ -26,7 +26,14 @@ namespace IceCreamStore.MAUI
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 })
-                .UseMauiCommunityToolkit();
+                .UseMauiCommunityToolkit()
+                .ConfigureMauiHandlers(h =>
+                {
+#if ANDROID || IOS
+                    // для этого меняем namespace
+                    h.AddHandler<Shell, TabbarBadgeRenderer>(); 
+#endif
+                });
 
 #if DEBUG
     		builder.Logging.AddDebug();
@@ -42,6 +49,8 @@ namespace IceCreamStore.MAUI
 
             builder.Services.AddTransient<DetailsViewModel>()
                             .AddTransient<DetailsPage>();
+
+            builder.Services.AddSingleton<CartViewModel>();
 
             ConfigureRefit(builder.Services);
 
