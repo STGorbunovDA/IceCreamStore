@@ -47,6 +47,8 @@ namespace IceCreamStore.MAUI.ViewModels
                 Topping = o.Topping,
                 IsSelected = false
             }).ToArray();
+
+            Quantity = _cartViewModel.GetItemCartCount(value.Id);
         }
 
         [RelayCommand]

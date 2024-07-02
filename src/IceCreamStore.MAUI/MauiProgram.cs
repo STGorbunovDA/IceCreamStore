@@ -38,6 +38,9 @@ namespace IceCreamStore.MAUI
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddSingleton<DatabaseService>();
+
             builder.Services.AddTransient<AuthViewModel>()
                             .AddTransient<SignupPage>()
                             .AddTransient<SigninPage>();
