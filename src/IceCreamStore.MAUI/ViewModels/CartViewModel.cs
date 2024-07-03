@@ -21,7 +21,7 @@ namespace IceCreamStore.MAUI.ViewModels
 
         public async void AddItemToCart(IcecreamDto icecream, int quantity, string flavor, string topping)
         {
-            var existingItem = CartItems.FirstOrDefault(ci => ci.IcecreamId == icecream.Id);
+            var existingItem = CartItems.FirstOrDefault(ci => ci.Id == icecream.Id);
             if (existingItem is not null)
             {
                 var dbCartItem = await _databaseService.GetCartItemAsync(existingItem.Id);
@@ -63,13 +63,18 @@ namespace IceCreamStore.MAUI.ViewModels
                 await ShowToastAsync("Icecream added to cart");
             }
 
+            NotifyCartCountChange();
+        }
+
+        private void NotifyCartCountChange()
+        {
             TotalCartCount = CartItems.Sum(i => i.Quantity);
             TotalCartCountChanged?.Invoke(null, TotalCartCount);
         }
-    
+
         public int GetItemCartCount(int icecreamId)
         {
-            var existingItem = CartItems.FirstOrDefault(i => i.IcecreamId == icecreamId);
+            var existingItem = CartItems.FirstOrDefault(i => i.Id == icecreamId);
             return existingItem?.Quantity ?? 0;
         }
 
@@ -80,6 +85,7 @@ namespace IceCreamStore.MAUI.ViewModels
             {
                 CartItems.Add(dbItem.ToCartItemModel());
             }
+            NotifyCartCountChange();
         }
     }
 }

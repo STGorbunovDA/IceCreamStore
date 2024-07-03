@@ -53,7 +53,8 @@ namespace IceCreamStore.MAUI
             builder.Services.AddTransient<DetailsViewModel>()
                             .AddTransient<DetailsPage>();
 
-            builder.Services.AddSingleton<CartViewModel>();
+            builder.Services.AddSingleton<CartViewModel>()
+                            .AddTransient<CartPage>();
 
             ConfigureRefit(builder.Services);
 
