@@ -9,9 +9,13 @@
              Title="My Cart"
              x:DataType="vm:CartViewModel"
              BackgroundColor="#EEE">
-
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Clear Cart" Command="{Binding ClearCartCommand}"/>
+    </ContentPage.ToolbarItems>
+    
     <Grid Padding="10">
-        <ScrollView>
+        <ScrollView Padding="0, 0, 0, 60">
             <CollectionView ItemsSource="{Binding CartItems}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:CartItem">
@@ -22,14 +26,15 @@
                             <Grid ColumnDefinitions="40, *, Auto, 50">
                                 <Label Text="{Binding Quantity}"
                                        VerticalOptions="Center"
-                                       FontSize="16" 
-                                       FontAttributes="Bold" 
-                                       Grid.Column="0"/>
-                                <VerticalStackLayout Grid.Column="1" Spacing="5">
-                                    <Label Text="{Binding Name}" 
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       Grid.Column="0" />
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Spacing="5">
+                                    <Label Text="{Binding Name}"
                                            FontSize="15"
                                            FontAttributes="Bold"
-                                           TextColor="DarkCyan"/>
+                                           TextColor="DarkCyan" />
                                     <Label FontSize="12">
                                         <Label.FormattedText>
                                             <FormattedString>
@@ -41,21 +46,33 @@
                                     </Label>
                                 </VerticalStackLayout>
                                 <Label Grid.Column="2"
-                                       Text="{Binding TotalPrice, StringFormat='{0:C}'}" 
+                                       Text="{Binding TotalPrice, StringFormat='{0:C}'}"
                                        FontAttributes="Bold"
                                        FontSize="15"
                                        VerticalOptions="Center"
                                        HorizontalOptions="Center" />
+                                <ImageButton Grid.Column="3"
+                                             Source="trash"
+                                             HeightRequest="24"
+                                             WidthRequest="24"
+                                             VerticalOptions="Center"
+                                             HorizontalOptions="End"
+                                             Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:CartViewModel}}, Path=RemoveCartItemCommand}"
+                                             CommandParameter="{Binding Id}">
+                                    <ImageButton.Behaviors>
+                                        <toolkit:IconTintColorBehavior TintColor="Green" />
+                                    </ImageButton.Behaviors>
+                                </ImageButton>
                             </Grid>
-                        </Border>>
+                        </Border> >
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </ScrollView>
         <Button Text="Place Order"
-                VerticalOptions="End" 
-                HorizontalOptions="Center"/>
+                VerticalOptions="End"
+                HorizontalOptions="Center" />
         <ActivityIndicator IsRunning="{Binding IsBusy}" />
     </Grid>
-    
+
 </ContentPage>

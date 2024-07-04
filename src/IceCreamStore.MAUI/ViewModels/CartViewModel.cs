@@ -1,4 +1,5 @@
-﻿using IceCreamStore.MAUI.Models;
+﻿using CommunityToolkit.Mvvm.Input;
+using IceCreamStore.MAUI.Models;
 using IceCreamStore.MAUI.Services;
 using IceCreamStore.Shared.Dtos;
 using System.Collections.ObjectModel;
@@ -49,7 +50,7 @@ namespace IceCreamStore.MAUI.ViewModels
                     IcecreamId = icecream.Id,
                     Name = icecream.Name,
                     Price = icecream.Price,
-                    Quantity = quantity,
+                    Quantity = quantity == 0 ? 1 : quantity,
                     ToppingName = topping
                 };
 
@@ -86,6 +87,46 @@ namespace IceCreamStore.MAUI.ViewModels
                 CartItems.Add(dbItem.ToCartItemModel());
             }
             NotifyCartCountChange();
+        }
+
+        [RelayCommand]
+        private async Task ClearCartAsync()
+        {
+            if(CartItems.Count == 0)
+            {
+                await ShowAlertAsync("Empty Cart", "There are no items in th cart");
+                return;
+            }
+
+            if (await ConfirmAsync("Clear Cart?", "Do you really want to clear all the items from the cart"))
+            {
+                await _databaseService.ClearCartAsync();
+                CartItems.Clear();
+                await ShowToastAsync("Cart cleared");
+                NotifyCartCountChange();
+            }
+        }
+
+        [RelayCommand]
+        private async Task RemoveCartItemAsync(int cartItemId)
+        {
+            if (await ConfirmAsync("Remove item from Cart?", "Do you really want todelet this item from the cart?"))
+            {
+                var existingItem = CartItems.FirstOrDefault(i => i.Id == cartItemId);
+                if (existingItem is null)
+                    return;
+
+                CartItems.Remove(existingItem);
+
+                var dbCartItem = await _databaseService.GetCartItemAsync(cartItemId);
+                if (dbCartItem is null)
+                    return;
+
+                await _databaseService.DeleteCartItem(dbCartItem);
+
+                await ShowToastAsync("Icecream removed form cart");
+                NotifyCartCountChange();
+            }
         }
     }
 }

@@ -36,6 +36,9 @@ namespace IceCreamStore.MAUI.Services
         public async Task<List<CartItemEntity>> GetAllCartItemsAsync() =>
              await ExecuteAsync(async () => await Database.Table<CartItemEntity>().ToListAsync());
 
+        public async Task<int> ClearCartAsync() =>
+            await ExecuteAsync(async () => await Database.DeleteAllAsync<CartItemEntity>());
+
         public async ValueTask DisposeAsync() =>
            await _connection?.CloseAsync();
     }
