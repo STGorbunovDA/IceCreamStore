@@ -18,7 +18,8 @@ builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(conne
 builder.Services.AddTransient<TokenService>()
                 .AddTransient<PasswordService>()
                 .AddTransient<AuthService>()
-                .AddTransient<IcecreamService>();
+                .AddTransient<IcecreamService>()
+                .AddTransient<OrderService>();
 
 builder.Services.AddAuthentication(options =>
 {
