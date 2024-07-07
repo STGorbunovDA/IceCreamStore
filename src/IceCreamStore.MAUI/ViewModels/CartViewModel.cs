@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using IceCreamStore.MAUI.Models;
+using IceCreamStore.MAUI.Pages;
 using IceCreamStore.MAUI.Services;
 using IceCreamStore.Shared.Dtos;
+using Refit;
 using System.Collections.ObjectModel;
 
 namespace IceCreamStore.MAUI.ViewModels
@@ -9,10 +11,14 @@ namespace IceCreamStore.MAUI.ViewModels
     public partial class CartViewModel : BaseViewModel
     {
         private readonly DatabaseService _databaseService;
+        private readonly IOrderApi _orderApi;
+        private readonly AuthService _authService;
 
-        public CartViewModel(DatabaseService databaseService)
+        public CartViewModel(DatabaseService databaseService, IOrderApi orderApi, AuthService authService)
         {
             _databaseService = databaseService;
+            _orderApi = orderApi;
+            _authService = authService;
         }
 
         public ObservableCollection<CartItem> CartItems { get; set; } = [];
@@ -92,20 +98,30 @@ namespace IceCreamStore.MAUI.ViewModels
         [RelayCommand]
         private async Task ClearCartAsync()
         {
-            if(CartItems.Count == 0)
+            await ClearCartInternalAsync(fromPlaceOrder: false);
+        }
+
+        private async Task ClearCartInternalAsync(bool fromPlaceOrder)
+        {
+            if (!fromPlaceOrder && CartItems.Count == 0)
             {
                 await ShowAlertAsync("Empty Cart", "There are no items in th cart");
                 return;
             }
 
-            if (await ConfirmAsync("Clear Cart?", "Do you really want to clear all the items from the cart"))
+            if (fromPlaceOrder // If we are coming from PlaceOrder, we will not display this confirm dialog 
+                || await ConfirmAsync("Clear Cart?", "Do you really want to clear all the items from the cart"))
             {
                 await _databaseService.ClearCartAsync();
                 CartItems.Clear();
-                await ShowToastAsync("Cart cleared");
+                
+                if(!fromPlaceOrder)
+                    await ShowToastAsync("Cart cleared");
+
                 NotifyCartCountChange();
             }
         }
+
 
         [RelayCommand]
         private async Task RemoveCartItemAsync(int cartItemId)
@@ -127,6 +143,48 @@ namespace IceCreamStore.MAUI.ViewModels
                 await ShowToastAsync("Icecream removed form cart");
                 NotifyCartCountChange();
             }
+        }
+
+        [RelayCommand]
+        private async Task PlaceOrderAsync()
+        {
+            if (CartItems.Count == 0)
+            {
+                await ShowAlertAsync("Empty Cart", "Please add some items to cart before placing order");
+                return;
+            }
+            IsBusy = true;
+            try
+            {
+                var order = new OrderDto(0, DateTime.Now, CartItems.Sum(i => i.TotalPrice));
+                var orderItems = CartItems.Select(i => new OrderItemDto(0, i.IcecreamId, i.Name, i.Quantity, i.Price, i.FlavorName, i.ToppingName)).ToArray();
+                var orderPlaceDto = new OrderPlaceDto(order, orderItems);
+
+                var result = await _orderApi.PlaceOrderAsync(orderPlaceDto);
+                if(!result.IsSuccess)
+                {
+                    await ShowErrorAlertAsync(result.ErrorMessage!);
+                    return;
+                }
+
+                // if result was successful
+                // Order placed successfully
+                await ShowToastAsync("Order placed");
+                await ClearCartInternalAsync(fromPlaceOrder: true);
+            }
+            catch (ApiException ex)
+            {
+                if(ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    // User is not logged in
+                    await ShowErrorAlertAsync("Session Expired.");
+                    _authService.Signout();
+                    await GoToAsync($"//{nameof(OnboardingPage)}");
+                    return;
+                }
+                await ShowErrorAlertAsync($"{ex.Message}");
+            }
+            finally { IsBusy = false; }
         }
     }
 }

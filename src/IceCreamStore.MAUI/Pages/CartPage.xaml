@@ -71,7 +71,8 @@
         </ScrollView>
         <Button Text="Place Order"
                 VerticalOptions="End"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center" 
+                Command="{Binding PlaceOrderCommand}"/>
         <ActivityIndicator IsRunning="{Binding IsBusy}" />
     </Grid>
 

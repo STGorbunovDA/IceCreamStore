@@ -56,6 +56,9 @@ namespace IceCreamStore.MAUI
             builder.Services.AddSingleton<CartViewModel>()
                             .AddTransient<CartPage>();
 
+            builder.Services.AddTransient<ProfileViewModel>()
+                            .AddTransient<ProfilePage>();
+
             ConfigureRefit(builder.Services);
 
             return builder.Build();
@@ -63,37 +66,13 @@ namespace IceCreamStore.MAUI
 
         private static void ConfigureRefit(IServiceCollection services)
         {
-            var refitSetting = new RefitSettings
-            {
-                HttpMessageHandlerFactory = () =>
-                {
-                    // return HttpMessageHandler
-
-#if ANDROID
-                    return new AndroidMessageHandler
-                    {
-                        ServerCertificateCustomValidationCallback = (httpRequestMessage, certificate, chain, sslPolicyErrors) =>
-                        {
-                            return certificate?.Issuer == "CN=localhost" || sslPolicyErrors == SslPolicyErrors.None;
-                        }
-                    };
-
-#elif IOS
-                    return new NSUrlSessionHandler
-                    {
-                        TrustOverrideForUrl = (NSUrlSessionHandler sender, string url, SecTrust trust) =>
-                        url.StartsWith("http://localhost")
-                    };
-
-#endif
-                    return null;
-                }
-            };
-
-            services.AddRefitClient<IAuthApi>(refitSetting)
+            services.AddRefitClient<IAuthApi>(GetRefitSettings)
                 .ConfigureHttpClient(SetHttpClient);
 
-            services.AddRefitClient<IIcecreamsApi>(refitSetting)
+            services.AddRefitClient<IIcecreamsApi>(GetRefitSettings)
+                .ConfigureHttpClient(SetHttpClient);
+
+            services.AddRefitClient<IOrderApi>(GetRefitSettings)
                 .ConfigureHttpClient(SetHttpClient);
 
 
@@ -107,6 +86,43 @@ namespace IceCreamStore.MAUI
                 }
 
                 httpClient.BaseAddress = new Uri(baseUrl);
+            }
+
+            static RefitSettings GetRefitSettings(IServiceProvider serviceProvider)
+            {
+                var authService = serviceProvider.GetRequiredService<AuthService>();
+
+                var refitSetting = new RefitSettings
+                {
+                    HttpMessageHandlerFactory = () =>
+                    {
+                        // return HttpMessageHandler
+
+#if ANDROID
+                        return new AndroidMessageHandler
+                        {
+                            ServerCertificateCustomValidationCallback = (httpRequestMessage, certificate, chain, sslPolicyErrors) =>
+                            {
+                                return certificate?.Issuer == "CN=localhost" || sslPolicyErrors == SslPolicyErrors.None;
+                            }
+                        };
+
+#elif IOS
+                    return new NSUrlSessionHandler
+                    {
+                        TrustOverrideForUrl = (NSUrlSessionHandler sender, string url, SecTrust trust) =>
+                        url.StartsWith("http://localhost")
+                    };
+
+#endif
+                        return null;
+                    },
+                    AuthorizationHeaderValueGetter = (_, __) => 
+                            Task.FromResult(authService.Token ?? string.Empty)
+                };
+
+
+                return refitSetting;
             }
         }
     }
