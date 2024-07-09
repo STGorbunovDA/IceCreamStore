@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using IceCreamStore.MAUI.Models;
 using IceCreamStore.Shared.Dtos;
+using Refit;
 
 namespace IceCreamStore.MAUI.ViewModels
 {

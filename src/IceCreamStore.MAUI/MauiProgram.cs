@@ -59,6 +59,9 @@ namespace IceCreamStore.MAUI
             builder.Services.AddTransient<ProfileViewModel>()
                             .AddTransient<ProfilePage>();
 
+            builder.Services.AddTransient<OrdersViewModel>()
+                            .AddTransient<MyOrdersPage>();
+
             ConfigureRefit(builder.Services);
 
             return builder.Build();

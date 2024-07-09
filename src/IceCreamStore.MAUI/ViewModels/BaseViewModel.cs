@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IceCreamStore.MAUI.Pages;
+using Refit;
 
 namespace IceCreamStore.MAUI.ViewModels
 {
@@ -27,5 +29,17 @@ namespace IceCreamStore.MAUI.ViewModels
 
         protected async Task<bool> ConfirmAsync(string title, string message) =>
             await Shell.Current.DisplayAlert(title, message, "Yes", "No");
+
+        protected async Task HandleApiExeptionAsync(ApiException ex, Action? signout)
+        {
+            if (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                // User is not logged in
+                await ShowErrorAlertAsync("Session Expired.");
+                signout?.Invoke();
+                await GoToAsync($"//{nameof(OnboardingPage)}");
+                return;
+            }
+        }
     }
 }

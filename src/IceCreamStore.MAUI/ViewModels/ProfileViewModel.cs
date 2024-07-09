@@ -39,7 +39,12 @@ namespace IceCreamStore.MAUI.ViewModels
         [RelayCommand]
         private async Task SignoutAsync()
         {
+            _authService.Signout();
             await GoToAsync($"//{nameof(OnboardingPage)}");
         }
+
+        [RelayCommand]
+        private async Task GoToMyOrdersAsync() => 
+            await GoToAsync(nameof(MyOrdersPage), animate: true);
     }
 }

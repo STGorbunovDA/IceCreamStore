@@ -174,15 +174,7 @@ namespace IceCreamStore.MAUI.ViewModels
             }
             catch (ApiException ex)
             {
-                if(ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    // User is not logged in
-                    await ShowErrorAlertAsync("Session Expired.");
-                    _authService.Signout();
-                    await GoToAsync($"//{nameof(OnboardingPage)}");
-                    return;
-                }
-                await ShowErrorAlertAsync($"{ex.Message}");
+                await HandleApiExeptionAsync(ex, () => _authService.Signout());
             }
             finally { IsBusy = false; }
         }

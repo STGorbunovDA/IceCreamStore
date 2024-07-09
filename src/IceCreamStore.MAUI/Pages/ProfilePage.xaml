@@ -43,17 +43,28 @@
         <VerticalStackLayout Grid.Row="1"
                              VerticalOptions="Center">
             <Label Text="My Orders"
-                   Style="{x:StaticResource MenuLbl}" />
+                   Style="{x:StaticResource MenuLbl}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToMyOrdersCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+            
             <BoxView HeightRequest="1"
                      Color="Aquamarine" 
                      Margin="0, 10"/>
+            <Label Text="Change password"
+                   Style="{x:StaticResource MenuLbl}" />
+            <BoxView HeightRequest="1"
+                     Color="Aquamarine"
+                     Margin="0, 10" />
         </VerticalStackLayout>
         <Button Grid.Row="2"
                 Text="Signout"
                 HeightRequest="30"
                 WidthRequest="120"
                 FontSize="15"
-                Padding="0">
+                Padding="0"
+                Command="{Binding SignoutCommand}">
 
         </Button>
     </Grid>
