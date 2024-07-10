@@ -1,38 +1,43 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using IceCreamStore.MAUI.Services;
 using IceCreamStore.Shared.Dtos;
 using Refit;
 
 namespace IceCreamStore.MAUI.ViewModels
 {
-    public partial class OrdersViewModel : BaseViewModel
+    [QueryProperty(nameof(OrderId), nameof(OrderId))]
+    public partial class OrderDetailsViewModel : BaseViewModel
     {
         private readonly AuthService _authService;
         private readonly IOrderApi _orderApi;
 
-        public OrdersViewModel(AuthService authService, IOrderApi orderApi)
+        public OrderDetailsViewModel(AuthService authService, IOrderApi orderApi) 
         {
             _authService = authService;
             _orderApi = orderApi;
         }
 
         [ObservableProperty]
-        private OrderDto[] _orders = [];
+        private long _orderId;
 
-        public async Task InitializeAsync() => await LoadOrdersAsync();
+        [ObservableProperty]
+        private OrderItemDto[] _orderItems = [];
 
-        [RelayCommand]
-        private async Task LoadOrdersAsync()
+        [ObservableProperty]
+        private string _title = "Order Items";
+
+        partial void OnOrderIdChanged(long value)
+        {
+            Title = $"Order #{value}";
+            LoadOrderItemsAsync(value);
+        }
+
+        private async Task LoadOrderItemsAsync(long orderId)
         {
             IsBusy = true;
             try
             {
-                Orders = await _orderApi.GetMyOrdersAsync();
-                if(Orders.Length == 0)
-                {
-                    await ShowToastAsync("No orders found");
-                }
+                OrderItems = await _orderApi.GetOrderItemsAsync(orderId);
             }
             catch (ApiException ex)
             {

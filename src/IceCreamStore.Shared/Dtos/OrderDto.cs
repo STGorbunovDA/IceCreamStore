@@ -4,7 +4,10 @@
     {
         public double TotalPrice => Quantity * Price;
     }
-    public record OrderDto(long Id, DateTime OrderAt, double TotalPrice);
+    public record OrderDto(long Id, DateTime OrderAt, double TotalPrice, int ItemsCount = 0)
+    {
+        public string ItemCountDisplay => ItemsCount + (ItemsCount > 1 ? " Items" : " Item");
+    }
     public record OrderPlaceDto(OrderDto Order, OrderItemDto[] Items);
 
 }

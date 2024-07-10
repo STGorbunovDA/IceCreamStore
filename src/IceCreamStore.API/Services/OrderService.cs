@@ -53,7 +53,7 @@ namespace IceCreamStore.API.Services
         public async Task<OrderDto[]> GetUserOrdersAsync(Guid userId) =>
              await _context.Orders
                           .Where(o => o.CustomerId == userId)
-                          .Select(o => new OrderDto(o.Id, o.OrderAt, o.TotalPrice))
+                          .Select(o => new OrderDto(o.Id, o.OrderAt, o.TotalPrice, o.Items.Count))
                           .ToArrayAsync();
 
 
