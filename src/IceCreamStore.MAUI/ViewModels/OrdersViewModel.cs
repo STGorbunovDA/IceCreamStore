@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IceCreamStore.MAUI.Pages;
 using IceCreamStore.MAUI.Services;
 using IceCreamStore.Shared.Dtos;
 using Refit;
@@ -39,6 +40,16 @@ namespace IceCreamStore.MAUI.ViewModels
                 await HandleApiExeptionAsync(ex, () => _authService.Signout());
             }
             finally { IsBusy = false; }
+        }
+
+        [RelayCommand]
+        private async Task GoToOrderDetailsPageAsync(long orderId)
+        {
+            var parametr = new Dictionary<string, object>
+            {
+                [nameof(OrderDetailsViewModel.OrderId)] = orderId,
+            };
+            await GoToAsync(nameof(OrderDetailsPage), animate: true, parametr);
         }
     }
 }

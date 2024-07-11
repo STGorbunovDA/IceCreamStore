@@ -8,7 +8,8 @@
              Title="My Orders"
              x:DataType="vm:OrdersViewModel"
              BackgroundColor="#EEE">
-    <RefreshView Command="{Binding LoadOrdersCommand}" IsRefreshing="{Binding IsBusy}">
+    <RefreshView Command="{Binding LoadOrdersCommand}"
+                 IsRefreshing="{Binding IsBusy}">
         <Grid>
             <ScrollView Padding="10">
                 <CollectionView ItemsSource="{Binding Orders}">
@@ -37,12 +38,12 @@
                                           RowSpacing="2">
                                         <Label Grid.Row="0"
                                                Text="{Binding TotalPrice, StringFormat='{}{0:C}'}"
-                                        FontSize="15"
-                                               TextColor="#30d5c8" 
-                                               FontAttributes="Bold" 
-                                               HorizontalOptions="End"/>
+                                               FontSize="15"
+                                               TextColor="#30d5c8"
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="End" />
                                         <Label Grid.Row="1"
-                                               Text="{Binding OrderAt, StringFormat={}{0:d MMM yyyy}}"
+                                               Text="{Binding OrderAt, StringFormat='{}{0:dd MMM yyyy}'}"
                                                FontSize="13" />
                                     </Grid>
                                     <Image Grid.Column="2"
@@ -53,6 +54,12 @@
                                         </Image.Behaviors>
                                     </Image>
                                 </Grid>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=GoToOrderDetailsPageCommand}"
+                                                          CommandParameter="{Binding Id}" />
+                                </Border.GestureRecognizers>
+
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

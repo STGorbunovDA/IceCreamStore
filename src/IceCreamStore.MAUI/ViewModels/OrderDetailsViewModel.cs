@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using IceCreamStore.MAUI.Pages;
 using IceCreamStore.MAUI.Services;
 using IceCreamStore.Shared.Dtos;
 using Refit;
@@ -45,5 +47,7 @@ namespace IceCreamStore.MAUI.ViewModels
             }
             finally { IsBusy = false; }
         }
+
+        
     }
 }

@@ -5,11 +5,14 @@ namespace IceCreamStore.MAUI.Services
 {
     public interface IAuthApi
     {
-        [Post("/api/signup")]
+        [Post("/api/auth/signup")]
         Task<ResultWithDataDto<AuthResponseDto>> SignupAsync(SignupRequestDto signupRequestDto);
 
-        [Post("/api/signin")]
+        [Post("/api/auth/signin")]
         Task<ResultWithDataDto<AuthResponseDto>> SigninAsync(SigninRequestDto signinRequestDto);
 
+        [Headers("Authorization: Bearer")]
+        [Post("/api/auth/change-password")]
+        Task<ResultDto> ChangePasswordAsync(ChangePasswordDto dto);
     }
 }

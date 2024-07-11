@@ -1,9 +1,12 @@
+using IceCreamStore.MAUI.ViewModels;
+
 namespace IceCreamStore.MAUI.Pages;
 
 public partial class OrderDetailsPage : ContentPage
 {
-	public OrderDetailsPage()
+	public OrderDetailsPage(OrderDetailsViewModel orderDetailsViewModel)
 	{
 		InitializeComponent();
+		BindingContext = orderDetailsViewModel;
 	}
 }
