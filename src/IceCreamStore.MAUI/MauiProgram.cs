@@ -65,6 +65,8 @@ namespace IceCreamStore.MAUI
             builder.Services.AddTransient<OrderDetailsViewModel>()
                             .AddTransient<OrderDetailsPage>();
 
+            builder.Services.AddTransient<ChangePasswordViewModel>();
+
             ConfigureRefit(builder.Services);
 
             return builder.Build();

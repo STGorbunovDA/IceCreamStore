@@ -29,7 +29,7 @@
                 <Setter Property="TextColor"
                         Value="#30d5c8" />
                 <Setter Property="PlaceholderColor"
-                        Value="Aquamarine" />
+                        Value="#333" />
             </Style>
             <Style TargetType="Editor">
                 <Setter Property="FontSize"
